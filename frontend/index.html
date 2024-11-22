@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Digital Footprint Eraser</title>
+    <script>
+        async function mapFiles() {
+            const response = await fetch('/map?directory=.');
+            const result = await response.json();
+            const fileList = document.getElementById('fileList');
+            fileList.innerHTML = '';
+            result.footprints.forEach(file => {
+                const li = document.createElement('li');
+                li.textContent = file.file_name;
+                fileList.appendChild(li);
+            });
+        }
+
+        async function deleteFile() {
+            const filePath = document.getElementById('filePath').value;
+            const response = await fetch('/delete', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ file_path: filePath })
+            });
+            const result = await response.json();
+            alert(result.message);
+        }
+    </script>
+</head>
+<body>
+    <h1>Digital Footprint Eraser</h1>
+    <button onclick="mapFiles()">Map Files</button>
+    <ul id="fileList"></ul>
+    <input type="text" id="filePath" placeholder="Enter file path to delete">
+    <button onclick="deleteFile()">Delete File</button>
+</body>
+</html>
